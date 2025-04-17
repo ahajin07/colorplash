@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ColorSplash AI</title>
+    <style>
+        body { text-align: center; margin-top: 50px; font-family: sans-serif; }
+        img { width: 300px; margin: 10px; border-radius: 12px; box-shadow: 0 0 10px gray; }
+        .alert { background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin: 10px auto; max-width: 600px; }
+        .info { background-color: #d1ecf1; color: #0c5460; padding: 10px; border-radius: 5px; margin: 10px auto; max-width: 600px; }
+        .image-container { display: flex; flex-wrap: wrap; justify-content: center; }
+        .image-item { margin: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>🎨 Welcome to ColorSplash AI</h1>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    {% if model_missing %}
+        <div class="info">
+            <h3>Model Download Instructions</h3>
+            <p>Please download the DeOldify model file from the official repository and place it in the models directory:</p>
+            <ol style="text-align: left; display: inline-block;">
+                <li>Download the <strong>ColorizeArtistic_gen.pth</strong> file (>100MB)</li>
+                <li>Place it in the <strong>models</strong> folder in this application's directory</li>
+                <li>Restart the application</li>
+            </ol>
+            <p>The model can be downloaded from the <a href="https://github.com/jantic/DeOldify" target="_blank">DeOldify GitHub repository</a>.</p>
+        </div>
+    {% else %}
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Colorize</button>
+        </form>
+
+        {% if input_image %}
+            <div class="image-container">
+                <div class="image-item">
+                    <h2>Original Image</h2>
+                    <img src="{{ url_for('static', filename='uploads/' + input_image) }}">
+                </div>
+                <div class="image-item">
+                    <h2>Grayscale Version</h2>
+                    <img src="{{ url_for('static', filename='uploads/' + grayscale_image) }}">
+                </div>
+                <div class="image-item">
+                    <h2>Colorized Image</h2>
+                    <img src="{{ url_for('static', filename='uploads/' + output_image) }}">
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
